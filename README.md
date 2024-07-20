@@ -15,6 +15,8 @@ On step 9, in another shell, enter `npm run workflow` to run the Workflow.
 
 ### Scenarios
 
+See `demo` folder for different scenarios that will be live-coded into `workflows.ts`:
+
 1. Happy path (`demo/workflows1.ts`)
 2. API Downtime (uncomment inventory code)
 3. Invalid order troubleshooting, set cc expiry in `starter.ts` to `12/23`
