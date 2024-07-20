@@ -9,25 +9,25 @@ import type { Order } from '../src/interfaces/order';
 const { requireApproval, processPayment, reserveInventory, deliverOrder } = proxyActivities<typeof activities>({
     startToCloseTimeout: '1 minute',
     retry: { nonRetryableErrorTypes: ['CreditCardExpiredException'] }
-});
-
-export const approveOrder = defineSignal('approveOrder');
-
-export async function OrderFulfillWorkflow(order: Order): Promise<string> {
+  });
+  
+  export const approveOrder = defineSignal('approveOrder');
+  
+  export async function OrderFulfillWorkflow(order: Order): Promise<string> {
     let isApproved = false;
     setHandler(approveOrder, () => { isApproved = true; });
-
+  
     if (await requireApproval(order)) {
-        const approvalOrTimeout = Promise.race([
-            condition(() => isApproved),
-            sleep(10000).then(() => { throw new Error('Approval timed out'); })
-        ]);
-
-        await approvalOrTimeout;
+      const approvalOrTimeout = Promise.race([
+        condition(() => isApproved),
+        sleep(30000).then(() => { throw new ApplicationFailure('Approval timed out'); })
+      ]);
+  
+      await approvalOrTimeout;
     }
-
+  
     const paymentResult = await processPayment(order);
     const inventoryResult = await reserveInventory(order);
     const deliveryResult = await deliverOrder(order);
     return `Order fulfilled: ${paymentResult}, ${inventoryResult}, ${deliveryResult}`;
-}
+  }
