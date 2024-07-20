@@ -1,7 +1,7 @@
 import { Order } from './interfaces/order';
 
 export async function validateOrder(order: Order): Promise<boolean> {
-  console.log("Validating order...");
+  console.log(`Validating order with ${order.items.length} items`);
   // Simulate validation logic
   return true;
 }

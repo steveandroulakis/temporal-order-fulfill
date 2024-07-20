@@ -1,4 +1,4 @@
-import { proxyActivities } from '@temporalio/workflow';
+import { ApplicationFailure, proxyActivities } from '@temporalio/workflow';
 
 import type * as activities from './activities';
 import type { Order } from './interfaces/order';
@@ -14,6 +14,6 @@ export async function OrderFulfillWorkflow(order: Order): Promise<string> {
     const deliveryResult = await deliverOrder(order);
     return `Order fulfilled: ${paymentResult}, ${inventoryResult}, ${deliveryResult}`;
   } else {
-    throw new Error('Order validation failed');
+    throw new ApplicationFailure('Order validation failed');
   }
 }
