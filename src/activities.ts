@@ -28,9 +28,9 @@ export async function processPayment(order: Order): Promise<string> {
 export async function reserveInventory(order: Order): Promise<string> {
   console.log("Reserving inventory...");
   
-  // Simulate inventory service downtime
-  // The activity will sleep the first 3 times it is called
-  // And throw an error to simulate API call timeout
+  // // Simulate inventory service downtime
+  // // The activity will sleep the first 3 times it is called
+  // // And throw an error to simulate API call timeout
   // const { attempt } = activity.Context.current().info;
   // if (attempt <= 3) {
   //   console.log(`Inventory service down, attempt ${attempt}`);

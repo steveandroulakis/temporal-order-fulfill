@@ -7,7 +7,7 @@ import type * as activities from './activities';
 import type { Order } from './interfaces/order';
 
 const { processPayment, reserveInventory, deliverOrder } = proxyActivities<typeof activities>({
-  startToCloseTimeout: '1 minute',
+  startToCloseTimeout: '5 seconds',
   retry: { nonRetryableErrorTypes: ['CreditCardExpiredException'] }
 });
 
