@@ -10,8 +10,8 @@ TEMPORAL_CLIENT_CERT_PATH
 TEMPORAL_CLIENT_KEY_PATH
 ```
 
-On step 8, run `npm start` to start the Worker.
-On step 9, in another shell, enter `npm run workflow` to run the Workflow.
+Run `npm start` to start the Worker.
+Run `npm run workflow` to run the Workflow.
 
 ### Scenarios
 
