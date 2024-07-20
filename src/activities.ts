@@ -19,7 +19,7 @@ export async function processPayment(order: Order): Promise<string> {
 
   // Simulate payment processing logic
   if (order.payment.creditCard.expiration === "12/23") {
-    throw new CreditCardExpiredException("Credit card expired");
+    throw new CreditCardExpiredException("Payment failed: Credit card expired");
   }
 
   return `Payment processed for ${order.items.length} items.`;

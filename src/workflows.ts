@@ -15,6 +15,6 @@ export async function OrderFulfillWorkflow(order: Order): Promise<string> {
   const paymentResult = await processPayment(order);
   const inventoryResult = await reserveInventory(order);
   const deliveryResult = await deliverOrder(order);
-  return `Order fulfilled: ${paymentResult}, ${inventoryResult}, ${deliveryResult}`;
+  return `Order fulfilled ${paymentResult} ${inventoryResult} ${deliveryResult}`;
 }
 
