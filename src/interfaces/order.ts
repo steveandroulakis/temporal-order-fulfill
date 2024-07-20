@@ -6,4 +6,14 @@ export interface OrderItem {
 
 export interface Order {
     items: OrderItem[];
+    payment: Payment;
 }
+
+interface Payment {
+    creditCard: CreditCard;
+  }
+  
+  interface CreditCard {
+    number: string;
+    expiration: string;
+  }

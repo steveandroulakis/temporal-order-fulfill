@@ -6,14 +6,20 @@ export async function runWorkflow(client: Client, taskQueue: string): Promise<vo
   const sampleOrder: Order = {
     items: [
       { itemName: "Headphones Pro", itemPrice: 399.00, quantity: 1 },
-      { itemName: "Wireless Charger", itemPrice: 59.99, quantity: 2 }
-    ]
+      { itemName: "Wireless Charger", itemPrice: 29.99, quantity: 2 }
+    ],
+    payment: {
+      creditCard: {
+        number: "1234 5678 1234 5678",
+        expiration: "12/25",
+      }
+    },
   };
 
   // Run example workflow and await its completion
   const result = await client.workflow.execute(OrderFulfillWorkflow, {
     taskQueue,
-    workflowId: `my-business-id-${Date.now()}`,
+    workflowId: `order-fulfill-${Date.now()}`,
     args: [sampleOrder],
   });
   console.log(result); // Processed Order Details!
