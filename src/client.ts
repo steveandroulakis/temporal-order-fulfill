@@ -1,7 +1,8 @@
 import fs from 'fs/promises';
 
 import { Connection, Client } from '@temporalio/client';
-import { example } from './workflows';
+import { runWorkflow } from './starter';
+import type { Order } from './interfaces/order';
 
 /**
  * Schedule a Workflow connecting with mTLS, configuration is provided via environment variables.
@@ -38,13 +39,8 @@ async function run({
     },
   });
   const client = new Client({ connection, namespace });
-  // Run example workflow and await its completion
-  const result = await client.workflow.execute(example, {
-    taskQueue,
-    workflowId: `my-business-id-${Date.now()}`,
-    args: ['Temporal'],
-  });
-  console.log(result); // Hello, Temporal!
+
+  await runWorkflow(client, taskQueue);
 }
 
 run(getEnv()).then(
@@ -83,6 +79,6 @@ export function getEnv(): Env {
     clientKeyPath: requiredEnv('TEMPORAL_CLIENT_KEY_PATH'),
     serverNameOverride: process.env.TEMPORAL_SERVER_NAME_OVERRIDE,
     serverRootCACertificatePath: process.env.TEMPORAL_SERVER_ROOT_CA_CERT_PATH,
-    taskQueue: process.env.TEMPORAL_TASK_QUEUE || 'hello-world-mtls',
+    taskQueue: process.env.TEMPORAL_TASK_QUEUE || 'sample-order-fulfill',
   };
 }
