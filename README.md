@@ -23,3 +23,6 @@ See `demo` folder for different scenarios that will be live-coded into `workflow
 4. Human in the loop, send `approveOrder` signal (`demo/workflows2.ts`)
 5. Approve or expire order (`demo/workflows3.ts`)
 6. Bug in workflow, add `throw Error('workflow bug!')` in workflow code
+7. Generate invalid orders `npm run workflow -- --numOrders 50 --invalidPercentage 20` (note the `--` to pass args to the script)
+    - This will generate 50 orders with 20% invalid orders
+    - Fix uncomment bug fix in `api.ts` and run again to fix workflows
