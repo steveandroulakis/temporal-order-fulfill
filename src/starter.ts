@@ -2,25 +2,44 @@ import { Client } from '@temporalio/client';
 import { OrderFulfillWorkflow } from './workflows';
 import type { Order } from './interfaces/order';
 
-export async function runWorkflow(client: Client, taskQueue: string): Promise<void> {
-  const sampleOrder: Order = {
+const sampleOrders: Order[] = [
+  {
     items: [
-      { itemName: "Headphones Pro", itemPrice: 399.00, quantity: 1 },
-      { itemName: "Wireless Charger", itemPrice: 29.99, quantity: 2 }
+      { itemName: "Cloudmonster Running Shoe (Men)", itemPrice: 126.99, quantity: 1 },
+      { itemName: "2002R Sneaker (Men)", itemPrice: 63.00, quantity: 2 }
     ],
     payment: {
       creditCard: {
-        number: "1234 5678 1234 5678",
-        expiration: "12/25",
+        number: "5678 1234 5678 1234",
+        expiration: "12/24"
       }
-    },
-  };
+    }
+  }
+];
 
-  // Run example workflow and await its completion
-  const result = await client.workflow.execute(OrderFulfillWorkflow, {
-    taskQueue,
-    workflowId: `order-fulfill-${Date.now()}`,
-    args: [sampleOrder],
+export async function runWorkflows(client: Client, taskQueue: string, orders: Order[]): Promise<void> {
+  const workflowPromises = orders.map((order, index) =>
+    client.workflow.execute(OrderFulfillWorkflow, {
+      taskQueue,
+      workflowId: `order-fulfill-${index}-${Date.now()}`,
+      args: [order],
+    }).then(
+      result => ({ status: 'fulfilled', result }),
+      error => ({ status: 'rejected', reason: error })
+    )
+  );
+
+  const results = await Promise.allSettled(workflowPromises);
+
+  results.forEach((result, index) => {
+    if (result.status === 'fulfilled') {
+      console.log(`Workflow ${index + 1} succeeded with result:`, result.value);
+    } else {
+      console.error(`Workflow ${index + 1} failed with reason:`, result.reason);
+    }
   });
-  console.log(result); // Processed Order Details!
+}
+
+export function getDefaultOrders(): Order[] {
+  return sampleOrders;
 }

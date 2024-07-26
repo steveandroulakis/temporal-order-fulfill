@@ -1,5 +1,6 @@
 import * as activity from '@temporalio/activity';
 import { Order } from './interfaces/order';
+import { reserveInventory as reserveInventoryAPI } from './api';
 
 export async function requireApproval(order: Order): Promise<boolean> {
   console.log(`Checking order requires approval (over $10k)`);
@@ -26,7 +27,6 @@ export async function processPayment(order: Order): Promise<string> {
 }
 
 export async function reserveInventory(order: Order): Promise<string> {
-  console.log("Reserving inventory...");
   
   // // Simulate inventory service downtime
   // // The activity will sleep the first 3 times it is called
@@ -38,6 +38,11 @@ export async function reserveInventory(order: Order): Promise<string> {
   //   throw new Error("Inventory service down");
   // }
 
+  console.log("Reserving inventory...");
+  
+  await reserveInventoryAPI(order.items);
+
+  // Simulate inventory reservation logic
   return `Inventory reserved for ${order.items.length} items.`;
 }
 
