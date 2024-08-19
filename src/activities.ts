@@ -31,11 +31,11 @@ export async function reserveInventory(order: Order): Promise<string> {
   // // Simulate inventory service downtime
   // // The activity will sleep the first 3 times it is called
   // // And throw an error to simulate API call timeout
-  // const { attempt } = activity.Context.current().info;
-  // if (attempt <= 3) {
-  //   console.log(`Inventory service down, attempt ${attempt}`);
-  //   await new Promise((resolve) => setTimeout(resolve, 10000));
-  //   throw new Error("Inventory service down");
+  const { attempt } = activity.Context.current().info;
+  // if (attempt <= 100) {
+    console.log(`Inventory service down, attempt ${attempt}`);
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+    throw new Error("Inventory service down");
   // }
 
   console.log("Reserving inventory...");
