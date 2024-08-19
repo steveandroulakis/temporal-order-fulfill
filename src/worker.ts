@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 
 import { Worker, NativeConnection } from '@temporalio/worker';
 import * as activities from './activities';
+import { Env, getEnv } from './interfaces/env';
 
 /**
  * Run a Worker with an mTLS connection, configuration is provided via environment variables.
@@ -21,25 +22,37 @@ async function run({
     serverRootCACertificate = await fs.readFile(serverRootCACertificatePath);
   }
 
-  const connection = await NativeConnection.connect({
-    address,
-    tls: {
-      serverNameOverride,
-      serverRootCACertificate,
-      // See docs for other TLS options
-      clientCertPair: {
-        crt: await fs.readFile(clientCertPath),
-        key: await fs.readFile(clientKeyPath),
+  let connection: NativeConnection;
+
+  if (clientCertPath && clientKeyPath) {
+    // mTLS configuration
+    const serverRootCACertificate = serverRootCACertificatePath
+      ? await fs.readFile(serverRootCACertificatePath)
+      : undefined;
+
+    connection = await NativeConnection.connect({
+      address,
+      tls: {
+        serverNameOverride,
+        serverRootCACertificate,
+        clientCertPair: {
+          crt: await fs.readFile(clientCertPath),
+          key: await fs.readFile(clientKeyPath),
+        },
       },
-    },
-  });
+    });
+  }
+  else {
+    console.log(`Using unencrypted connection`);
+    connection = await NativeConnection.connect({ address: address });
+  }
 
   const worker = await Worker.create({
     connection,
     namespace,
     workflowsPath: require.resolve('./workflows'),
-    activities,
     taskQueue,
+    activities: activities,
   });
   console.log('Worker connection successfully established');
 
@@ -52,34 +65,3 @@ run(getEnv()).catch((err) => {
   process.exit(1);
 });
 
-// Helpers for configuring the mTLS client and worker samples
-
-function requiredEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new ReferenceError(`${name} environment variable is not defined`);
-  }
-  return value;
-}
-
-export interface Env {
-  address: string;
-  namespace: string;
-  clientCertPath: string;
-  clientKeyPath: string;
-  serverNameOverride?: string;
-  serverRootCACertificatePath?: string;
-  taskQueue: string;
-}
-
-export function getEnv(): Env {
-  return {
-    address: requiredEnv('TEMPORAL_ADDRESS'),
-    namespace: requiredEnv('TEMPORAL_NAMESPACE'),
-    clientCertPath: requiredEnv('TEMPORAL_CLIENT_CERT_PATH'),
-    clientKeyPath: requiredEnv('TEMPORAL_CLIENT_KEY_PATH'),
-    serverNameOverride: process.env.TEMPORAL_SERVER_NAME_OVERRIDE,
-    serverRootCACertificatePath: process.env.TEMPORAL_SERVER_ROOT_CA_CERT_PATH,
-    taskQueue: process.env.TEMPORAL_TASK_QUEUE || 'sample-order-fulfill',
-  };
-}
