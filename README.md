@@ -2,15 +2,23 @@
 
 ### Running this sample
 
-Set env vars for cloud
+The sample is configured by default to connect to a [local Temporal Server](https://docs.temporal.io/cli#starting-the-temporal-server) running on localhost:7233
+
 ```
-TEMPORAL_ADDRESS
-TEMPORAL_NAMESPACE
-TEMPORAL_CLIENT_CERT_PATH
-TEMPORAL_CLIENT_KEY_PATH
+temporal server start-dev
 ```
 
-Run `npm run start` to start the Worker.
+To instead connect to Temporal Cloud, set the following environment variables, replacing them with your own Temporal Cloud credentials:
+
+```bash
+TEMPORAL_ADDRESS=testnamespace.sdvdw.tmprl.cloud:7233
+TEMPORAL_NAMESPACE=testnamespace.sdvdw
+TEMPORAL_CLIENT_CERT_PATH="/path/to/file.pem"
+TEMPORAL_CLIENT_KEY_PATH="/path/to/file.key"
+
+`npm install` to install dependencies.
+
+Run `npm run start` to start the Worker. (You can also get [Nodemon](https://www.npmjs.com/package/nodemon) to watch for changes and restart the worker automatically by running `npm run start.watch`.)
 Run `npm run workflow` to run the Workflow.
 
 ### Scenarios
