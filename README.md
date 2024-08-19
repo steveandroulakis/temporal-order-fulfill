@@ -15,6 +15,7 @@ TEMPORAL_ADDRESS=testnamespace.sdvdw.tmprl.cloud:7233
 TEMPORAL_NAMESPACE=testnamespace.sdvdw
 TEMPORAL_CLIENT_CERT_PATH="/path/to/file.pem"
 TEMPORAL_CLIENT_KEY_PATH="/path/to/file.key"
+```
 
 `npm install` to install dependencies.
 
