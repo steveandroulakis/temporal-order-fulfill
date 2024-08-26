@@ -1,0 +1,63 @@
+
+// for video
+// window size 1080
+// UI compact mode, 100% zoom
+
+// non-video zoom vscode
+
+// 1 terminal window, worker nodemon
+// disable github copilot
+// workflows0.ts
+// npm run start.watch
+// npm run workflow
+
+// 1 happy
+    const paymentResult = await processPayment(order);
+    const inventoryResult = await reserveInventory(order);
+    const deliveryResult = await deliverOrder(order);
+    return `Order fulfilled: ${paymentResult}, ${inventoryResult}, ${deliveryResult}`;
+    // show starter.ts
+    // npm run workflow
+    // API downtime inventory comment out
+    // UNDO API inventory
+    // Invalid order
+    	starter.ts: "12/25" -> "12/23"
+    // nonretryable error type
+    //// bug in workflow (undo quantity change)
+    	throw new Error("workflow bug!")
+/// 2
+    // UNDO cc 12/23
+    import { proxyActivities, defineSignal, setHandler, condition }
+    ///
+    const { requireApproval, .. ACTIVITY
+    /// outside wf
+    export const approveOrder = defineSignal('approveOrder');
+    /// inside wf
+    let isApproved = false;
+    setHandler(approveOrder, () => { isApproved = true; });
+
+    if (await requireApproval(order)) {
+        await condition(() => isApproved);
+    }
+    // set quantity 10000
+    // unhappy -> happy
+/// 3
+    import sleep, ApplicationFailure
+    /// take AWAIT out of condition
+    if (await requireApproval(order)) {
+	    const approvalOrTimeout = Promise.race([
+	      condition(() => isApproved),
+	      sleep(30000).then(() => { throw new ApplicationFailure('Approval timed out'); })
+	    ]);
+
+	    await approvalOrTimeout;
+  	}
+    // undo 10000 headphones
+/// 4 stretch goal demo
+	npm run workflow -- --numOrders 50 --invalidPercentage 20
+	api.ts uncomment bug fix
+
+
+
+
+

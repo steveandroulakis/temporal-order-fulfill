@@ -59,7 +59,6 @@ async function run({
 
   client = new Client({ connection, namespace });
   await runWorkflows(client, taskQueue, orders);
-  console.log('All workflows started');
 }
 
 function getRandomInt(min: number, max: number): number {

@@ -1,23 +1,17 @@
-import {
-  proxyActivities
-}
-  from '@temporalio/workflow';
+import { proxyActivities }
+    from '@temporalio/workflow';
 
-import type * as activities from './activities';
-import type { Order } from './interfaces/order';
+import type * as activities from '../src/activities';
+import type { Order } from '../src/interfaces/order';
 
 const { processPayment, reserveInventory, deliverOrder } = proxyActivities<typeof activities>({
-  startToCloseTimeout: '5 seconds',
-  retry: {
-    nonRetryableErrorTypes: ['CreditCardExpiredException'],
-    maximumInterval: '15 seconds'
-   }
+    startToCloseTimeout: '5 seconds',
+    retry: { nonRetryableErrorTypes: ['CreditCardExpiredException'] }
 });
 
 export async function OrderFulfillWorkflow(order: Order): Promise<string> {
-  const paymentResult = await processPayment(order);
-  const inventoryResult = await reserveInventory(order);
-  const deliveryResult = await deliverOrder(order);
-  return `Order fulfilled ${paymentResult} ${inventoryResult} ${deliveryResult}`;
+    const paymentResult = await processPayment(order);
+    const inventoryResult = await reserveInventory(order);
+    const deliveryResult = await deliverOrder(order);
+    return `Order fulfilled: ${paymentResult}, ${inventoryResult}, ${deliveryResult}`;
 }
-
