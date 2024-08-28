@@ -3,7 +3,8 @@
 // window size 1080
 // UI compact mode, 100% zoom
 
-// non-video zoom vscode
+// non-video zoom vscode and
+// Control + Left Arrow: Switch to the space on the left.
 
 // 1 terminal window, worker nodemon
 // disable github copilot
