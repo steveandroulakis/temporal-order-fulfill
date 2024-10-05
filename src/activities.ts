@@ -23,7 +23,7 @@ export async function processPayment(order: Order): Promise<string> {
     throw new CreditCardExpiredException("Payment failed: Credit card expired");
   }
 
-  return `Payment processed for ${order.items.length} items.`;
+  return `Payment processed for ${order.items.length} items`;
 }
 
 export async function reserveInventory(order: Order): Promise<string> {
@@ -43,13 +43,13 @@ export async function reserveInventory(order: Order): Promise<string> {
   await reserveInventoryAPI(order.items);
 
   // Simulate inventory reservation logic
-  return `Inventory reserved for ${order.items.length} items.`;
+  return `Inventory reserved for ${order.items.length} items`;
 }
 
 export async function deliverOrder(order: Order): Promise<string> {
   console.log("Delivering order...");
   // Simulate order delivery logic
-  return `Order delivered for ${order.items.length} items.`;
+  return `Order delivered for ${order.items.length} items`;
 }
 
 

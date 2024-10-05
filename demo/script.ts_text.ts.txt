@@ -2,9 +2,11 @@
 // for video
 // window size 1080
 // UI compact mode, 100% zoom
+// see obs screenshots etc 10/4 2024
 
 // non-video zoom vscode and
 // Control + Left Arrow: Switch to the space on the left.
+// or just switch apps
 
 // 1 terminal window, worker nodemon
 // disable github copilot
@@ -19,6 +21,7 @@
     return `Order fulfilled: ${paymentResult}, ${inventoryResult}, ${deliveryResult}`;
     // show starter.ts
     // npm run workflow
+    // show worker, stop worker!
     // API downtime inventory comment out
     // UNDO API inventory
     // Invalid order
@@ -41,6 +44,7 @@
         await condition(() => isApproved);
     }
     // set quantity 10000
+    // show worker, stop worker!
     // unhappy -> happy
 /// 3
     import sleep, ApplicationFailure
