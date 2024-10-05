@@ -4,6 +4,9 @@
 // UI compact mode, 100% zoom
 // see obs screenshots etc 10/4 2024
 
+// da vinci
+// see orderfulfill-newui audio settings (dynamics/EQ)
+
 // non-video zoom vscode and
 // Control + Left Arrow: Switch to the space on the left.
 // or just switch apps
@@ -11,8 +14,10 @@
 // 1 terminal window, worker nodemon
 // disable github copilot
 // workflows0.ts
-// npm run start.watch
+// npm run start.watch # DOUBLE ctrl+c to kill
 // npm run workflow
+
+// no mouth sounds!
 
 // ### INTRO
 // Today I'm going to walk you through creating a Temporal Workflow
@@ -31,6 +36,8 @@
 // Now I just need to add these steps to my blank workflow, OrderFulfillWorkflow
 // So let's begin!
 
+// I'm going to start my Temporal worker.
+// This is the process that will execute my workflow and its activities.
 // Let's run this workflow!
 
 // Workflow here
@@ -43,16 +50,60 @@
     // show starter.ts
     // npm run workflow
     // Now I have introduced some delays in my mock API calls, so the workflow will take a few seconds to complete
-    // SHOW worker, stop worker!
+
+// 1.1
+    // Earlier, I started a worker to handle executing this workflow.
+    // In practice, people run fleets of these in a highly available setup
+    // Let's put Temporal's durability to the test by bringing up another worker for a total of 2
+    // I'll run another workflow and bring one of the workers down while it's busy executing the workflow and we'll see what happens
+
+    // You will have noticed that as we brought down the worker that was executing this workflow, the other worker sprung into life and finished the workflow execution
+    // If we look at the UI, you see the workflow experienced a slight delay, but nevertheless completed successfully
+
+    // So Temporal workflows are durable beyond any individual worker
+
+    // But what happens if I run another workflow and bring down this remaining worker?
+
+    // It looks like our execution has stalled, as there are no workers to run this workflow
+    // Note that the workflow didn't fail and it's still running
+    // In reality, you might be running fleets of workers and getting all kinds of alerts that your workers are down
+    // Let's bring a worker back up and see what becomes of our existing workflow execution
+
+// 1.2
     // API downtime inventory comment out
     // UNDO API inventory
-    // Invalid order
+
+    // The next failure scenario I'll show you is an unrecoverable error
+    // Sometimes business transactions fail in an unrecoverable way
+    // So it's not temporary API downtime, but instead some kind of business reason why the order can't complete
+    // For example, inventory out of stock..
+    // .. or invalid payment information
+
     	starter.ts: "12/25" -> "12/23"
     // nonretryable error type
+
     //// bug in workflow (undo quantity change)
+
+    // The final failure I'll show you
+    // Is "what happens if there's a bug in the workflow?"
+    // What happens if the workflow gets into a state where it cannot proceed
     	throw new Error("workflow bug!")
 /// 2
     // UNDO cc 12/23
+    // 
+    // I'm going to introduce some workflow interactivity
+    // A reason you might want to interact with a workflow while it's running is..
+    // Let's say an order came in that's an anomaly
+        // Extra large, or extra strange for some reason
+        // You might want a human to review the order and approve it before it proceeds
+    // Let's code it up
+
+    // I've introduced a function that determines whether we require approval or not
+    // This is based on if the order is above $10,000
+    // And I'll introduce a Temporal signal to take that approval
+
+    // TALK WHILE CODING
+
     import { proxyActivities, defineSignal, setHandler, condition }
     ///
     const { requireApproval, .. ACTIVITY
