@@ -12,6 +12,7 @@ export async function requireApproval(order: Order): Promise<boolean> {
     return true;
   }
 
+  await simulateDelay(1000);
   return false;
 }
 
@@ -23,6 +24,7 @@ export async function processPayment(order: Order): Promise<string> {
     throw new CreditCardExpiredException("Payment failed: Credit card expired");
   }
 
+  await simulateDelay(1000);
   return `Payment processed for ${order.items.length} items`;
 }
 
@@ -38,20 +40,29 @@ export async function reserveInventory(order: Order): Promise<string> {
   //   throw new Error("Inventory service down");
   // }
 
+  // Simulate inventory reservation logic
   console.log("Reserving inventory...");
-  
   await reserveInventoryAPI(order.items);
 
-  // Simulate inventory reservation logic
+  await simulateDelay(1000);
   return `Inventory reserved for ${order.items.length} items`;
 }
 
 export async function deliverOrder(order: Order): Promise<string> {
-  console.log("Delivering order...");
   // Simulate order delivery logic
+  console.log("Delivering order...");
+
+  await simulateDelay(1000);
   return `Order delivered for ${order.items.length} items`;
 }
 
+function simulateDelay(sleepMs: number): Promise<void> {
+  // take sleepMs as input and introduce variance of +/- 20%
+  const variance = sleepMs * 0.2;
+  sleepMs += Math.floor(Math.random() * 2 * variance) - variance;
+  console.log(`Simulating delay of ${sleepMs}ms`);
+  return new Promise((resolve) => setTimeout(resolve, sleepMs));
+}
 
 export class CreditCardExpiredException extends Error {
   constructor(message?: string) {

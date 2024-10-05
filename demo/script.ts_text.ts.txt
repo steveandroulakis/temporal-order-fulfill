@@ -14,6 +14,27 @@
 // npm run start.watch
 // npm run workflow
 
+// ### INTRO
+// Today I'm going to walk you through creating a Temporal Workflow
+// .. for a sample -- eCommerce Order Fulfillment use case
+
+// I'm going to do this in Temporal's Typescript SDK
+
+// Once we create the workflow, I'll show you some common failure scenarios
+// .. and how Temporal handles them gracefully
+
+// Then I'll add some interactivity in the workflow, with a human-in-the-loop scenario
+// And add some asynchronous logic to show you how Temporal can handle complex use cases with ease
+
+// I have some mocked out Temporal Activities to ... processPayment..
+// These are the steps I want each order to go through
+// Now I just need to add these steps to my blank workflow, OrderFulfillWorkflow
+// So let's begin!
+
+// Let's run this workflow!
+
+// Workflow here
+
 // 1 happy
     const paymentResult = await processPayment(order);
     const inventoryResult = await reserveInventory(order);
@@ -21,7 +42,8 @@
     return `Order fulfilled: ${paymentResult}, ${inventoryResult}, ${deliveryResult}`;
     // show starter.ts
     // npm run workflow
-    // show worker, stop worker!
+    // Now I have introduced some delays in my mock API calls, so the workflow will take a few seconds to complete
+    // SHOW worker, stop worker!
     // API downtime inventory comment out
     // UNDO API inventory
     // Invalid order
@@ -44,7 +66,7 @@
         await condition(() => isApproved);
     }
     // set quantity 10000
-    // show worker, stop worker!
+    // SHOW worker, stop worker!
     // unhappy -> happy
 /// 3
     import sleep, ApplicationFailure
