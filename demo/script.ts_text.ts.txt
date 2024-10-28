@@ -136,6 +136,8 @@
 	api.ts uncomment bug fix
 /// Back to slides
 
-
+// So to recap, I showed you how Temporal is durable in the face of a number of different failures
+// ... and introduced some interactivity to the workflow to show how simple that can be to code
+// Thanks for watching!
 
 
