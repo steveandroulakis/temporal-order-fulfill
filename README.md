@@ -1,4 +1,4 @@
-# Order fulfill
+# Temporal Demo: Order Fulfillment in Typescript
 
 ### Overview
 A Temporal workflow for a sample e-commerce order fulfillment use case. This demo showcases Temporal's powerful durability and interactive capabilities.
