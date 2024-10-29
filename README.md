@@ -1,5 +1,12 @@
 # Order fulfill
 
+### Overview
+A Temporal workflow for a sample e-commerce order fulfillment use case. This demo showcases Temporal's powerful durability and interactive capabilities.
+
+[Watch the demo  (YouTube)](https://www.youtube.com/watch?v=dNVmRfWsNkM)
+
+[![Watch the demo](./videoscreenie.jpg)](https://www.youtube.com/watch?v=dNVmRfWsNkM)
+
 ### Running this sample
 
 The sample is configured by default to connect to a [local Temporal Server](https://docs.temporal.io/cli#starting-the-temporal-server) running on localhost:7233
