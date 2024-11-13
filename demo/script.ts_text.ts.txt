@@ -116,7 +116,9 @@
     if (await requireApproval(order)) {
         await condition(() => isApproved);
     }
-    // set quantity 10000
+        starter.ts: Set one of the quantity values to 1000
+        This will force an order over $10k and block (requiring approval signal)
+
     // SHOW worker, stop worker!
     // unhappy -> happy
 /// 3
@@ -130,7 +132,7 @@
 
 	    await approvalOrTimeout;
   	}
-    // undo 10000 headphones
+    // undo 1000 quantity
 /// 4 stretch goal demo
 	npm run workflow -- --numOrders 50 --invalidPercentage 20
 	api.ts uncomment bug fix
