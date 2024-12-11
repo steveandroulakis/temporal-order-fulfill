@@ -15,13 +15,23 @@ The sample is configured by default to connect to a [local Temporal Server](http
 temporal server start-dev
 ```
 
-To instead connect to Temporal Cloud, set the following environment variables, replacing them with your own Temporal Cloud credentials:
+To instead connect to Temporal Cloud, set the following environment variables, replacing them with your own Temporal Cloud credentials.
+
+With mTLS:
 
 ```bash
 TEMPORAL_ADDRESS=testnamespace.sdvdw.tmprl.cloud:7233
 TEMPORAL_NAMESPACE=testnamespace.sdvdw
 TEMPORAL_CLIENT_CERT_PATH="/path/to/file.pem"
 TEMPORAL_CLIENT_KEY_PATH="/path/to/file.key"
+```
+
+With API key:
+```bash
+TEMPORAL_ADDRESS=us-west-2.aws.api.temporal.io:7233
+TEMPORAL_NAMESPACE=testnamespace.sdvdw
+TEMPORAL_API_KEY="your-api-key"
+# ensure TEMPORAL_CLIENT_CERT_PATH and TEMPORAL_CLIENT_KEY_PATH are not set
 ```
 
 `npm install` to install dependencies.

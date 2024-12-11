@@ -12,6 +12,7 @@ export interface Env {
     namespace: string;
     clientCertPath?: string;
     clientKeyPath?: string;
+    clientApiKey?: string;
     serverNameOverride?: string; // not needed if connecting to Temporal Cloud
     serverRootCACertificatePath?: string; // not needed if connecting to Temporal Cloud
     taskQueue: string;
@@ -23,6 +24,7 @@ export function getEnv(): Env {
         namespace: process.env.TEMPORAL_NAMESPACE || 'default',
         clientCertPath: process.env.TEMPORAL_CLIENT_CERT_PATH,
         clientKeyPath: process.env.TEMPORAL_CLIENT_KEY_PATH,
+        clientApiKey: process.env.TEMPORAL_API_KEY,
         serverNameOverride: process.env.TEMPORAL_SERVER_NAME_OVERRIDE,
         serverRootCACertificatePath: process.env.TEMPORAL_SERVER_ROOT_CA_CERT_PATH,
         taskQueue: process.env.TEMPORAL_TASK_QUEUE || 'sample-order-fulfill',

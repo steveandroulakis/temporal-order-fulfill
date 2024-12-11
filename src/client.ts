@@ -8,29 +8,35 @@ import type { Order, OrderItem } from './interfaces/order';
 import { NativeConnection } from '@temporalio/worker';
 import { Env, getEnv } from './interfaces/env';
 
+// Extended Env interface to include API key
+interface EnvWithApiKey extends Env {
+  clientApiKey?: string;
+}
+
 /**
- * Schedule a Workflow connecting with mTLS, configuration is provided via environment variables.
+ * Schedule a Workflow connecting with either mTLS or API key authentication.
+ * Configuration is provided via environment variables.
+ * 
+ * For mTLS: Requires clientCertPath and clientKeyPath
+ * For API key: Requires clientApiKey
  * Note that serverNameOverride and serverRootCACertificate are optional.
- *
- * If using Temporal Cloud, omit the serverRootCACertificate so that Node.js defaults to using
- * Mozilla's publicly trusted list of CAs when verifying the server certificate.
  */
 async function run({
   address,
   namespace,
   clientCertPath,
   clientKeyPath,
+  clientApiKey,
   serverNameOverride,
   serverRootCACertificatePath,
   taskQueue,
-}: Env, numOrders?: number, invalidPercentage?: number) {
-  // Note that the serverRootCACertificate is NOT needed if connecting to Temporal Cloud because
-  // the server certificate is issued by a publicly trusted CA.
+}: EnvWithApiKey, numOrders?: number, invalidPercentage?: number) {
   let client: Client;
   let connection: Connection | NativeConnection;
 
+  // Check for mTLS certificates first
   if (clientCertPath && clientKeyPath) {
-    // mTLS configuration
+    console.log('Using mTLS authentication');
     const serverRootCACertificate = serverRootCACertificatePath
       ? await fs.readFile(serverRootCACertificatePath)
       : undefined;
@@ -47,9 +53,22 @@ async function run({
       },
     });
   }
+  // If no mTLS certificates, check for API key
+  else if (clientApiKey) {
+    console.log('Using API key authentication');
+    connection = await Connection.connect({
+      address,
+      tls: true,
+      apiKey: clientApiKey,
+      metadata: {
+        'temporal-namespace': namespace,
+      },
+    });
+  }
+  // Fallback to unencrypted connection (not recommended for production)
   else {
-    console.log(`Using unencrypted connection`);
-    connection = await Connection.connect({ address: address });
+    console.log('Warning: Using unencrypted connection');
+    connection = await Connection.connect({ address });
   }
 
   // Generate orders
@@ -61,6 +80,7 @@ async function run({
   await runWorkflows(client, taskQueue, orders);
 }
 
+// Rest of the code remains unchanged
 function getRandomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -106,7 +126,6 @@ function generateOrders(count: number, invalidPercentage: number): Order[] {
 }
 
 function makeOrderInvalid(order: Order): void {
-  // Append @@@ to one of the item names to make them invalid
   if (order.items.length > 0) {
     order.items[0].itemName += "@@@";
   }
