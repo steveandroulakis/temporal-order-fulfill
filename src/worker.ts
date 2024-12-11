@@ -1,11 +1,14 @@
 import fs from 'fs/promises';
-
 import { Worker, NativeConnection } from '@temporalio/worker';
 import * as activities from './activities';
 import { Env, getEnv } from './interfaces/env';
 
 /**
- * Run a Worker with an mTLS connection, configuration is provided via environment variables.
+ * Run a Worker with either mTLS or API key authentication.
+ * Configuration is provided via environment variables.
+ * 
+ * For mTLS: Requires clientCertPath and clientKeyPath
+ * For API key: Requires clientApiKey
  * Note that serverNameOverride and serverRootCACertificate are optional.
  */
 async function run({
@@ -13,19 +16,16 @@ async function run({
   namespace,
   clientCertPath,
   clientKeyPath,
+  clientApiKey,
   serverNameOverride,
   serverRootCACertificatePath,
   taskQueue,
 }: Env) {
-  let serverRootCACertificate: Buffer | undefined = undefined;
-  if (serverRootCACertificatePath) {
-    serverRootCACertificate = await fs.readFile(serverRootCACertificatePath);
-  }
-
   let connection: NativeConnection;
 
+  // Check for mTLS certificates first
   if (clientCertPath && clientKeyPath) {
-    // mTLS configuration
+    console.log('Using mTLS authentication');
     const serverRootCACertificate = serverRootCACertificatePath
       ? await fs.readFile(serverRootCACertificatePath)
       : undefined;
@@ -42,9 +42,22 @@ async function run({
       },
     });
   }
+  // If no mTLS certificates, check for API key
+  else if (clientApiKey) {
+    console.log('Using API key authentication');
+    connection = await NativeConnection.connect({
+      address,
+      tls: true,
+      apiKey: clientApiKey,
+      metadata: {
+        'temporal-namespace': namespace,
+      },
+    });
+  }
+  // Fallback to unencrypted connection (not recommended for production)
   else {
-    console.log(`Using unencrypted connection`);
-    connection = await NativeConnection.connect({ address: address });
+    console.log('Warning: Using unencrypted connection');
+    connection = await NativeConnection.connect({ address });
   }
 
   const worker = await Worker.create({
@@ -52,8 +65,9 @@ async function run({
     namespace,
     workflowsPath: require.resolve('./workflows'),
     taskQueue,
-    activities: activities,
+    activities,
   });
+
   console.log('Worker connection successfully established');
 
   await worker.run();
@@ -64,4 +78,3 @@ run(getEnv()).catch((err) => {
   console.error(err);
   process.exit(1);
 });
-
