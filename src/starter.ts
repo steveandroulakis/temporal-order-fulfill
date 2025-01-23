@@ -11,7 +11,7 @@ const sampleOrders: Order[] = [
     payment: {
       creditCard: {
         number: "5678 1234 5678 1234",
-        expiration: "12/24"
+        expiration: "12/26"
       }
     }
   }
